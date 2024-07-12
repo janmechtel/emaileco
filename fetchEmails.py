@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "0.7.3"
-app = marimo.App()
+app = marimo.App(width="full")
 
 
 @app.cell
@@ -27,7 +27,7 @@ def __(mo):
 
 
 @app.cell
-def __(email_address, password):
+def __():
     import imaplib
     import email
 
@@ -37,17 +37,17 @@ def __(email_address, password):
 
     # Connect to the IMAP server
     imap = imaplib.IMAP4_SSL(imap_server, imap_port)
+    return email, imap, imap_port, imap_server, imaplib
 
+
+@app.cell
+def __(email_address, imap, password):
     # Login to your Gmail account
     imap.login(email_address.value, password.value)
 
     # Select the inbox
     imap.select("INBOX")
-    return email, imap, imap_port, imap_server, imaplib
 
-
-@app.cell
-def __(imap):
     resp, data = imap.uid(
         "FETCH",
         "1:*",
@@ -63,8 +63,10 @@ def __(imap):
             # print(line1)
             splits1 = line1.split(" ")
             for z in range(1, len(splits1) - 1, 2):
-                if splits1[z] in ("X-GM-MSGID", "RFC822.SIZE"):
-                    _msg[splits1[z]] = splits1[z + 1]
+                if splits1[z] == "X-GM-MSGID":
+                    _msg["X-GM-MSGID"] = splits1[z + 1]
+                elif splits1[z] == "RFC822.SIZE":
+                    _msg["Size"] = int(splits1[z + 1])
             # print(splits1)
             line2 = d[1].decode()
             # print(line2)
@@ -96,10 +98,16 @@ def __():
 @app.cell
 def __(messages, pd):
     df = pd.DataFrame(messages)
-
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     # Save the DataFrame to a CSV file
     df.to_csv("emails.csv", index=False)
     return df,
+
+
+@app.cell
+def __(df, mo):
+    mo.ui.dataframe(df, page_size=100)
+    return
 
 
 if __name__ == "__main__":

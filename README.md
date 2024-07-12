@@ -5,10 +5,11 @@ For now there is a [marimo notebook](https://github.com/marimo-team/marimo) that
 
 Ideas/Roadmap:
 
-- [ ] only use pure emails for To/From
-- [ ] Table view
-- [ ] Sort & Filter
+- [X] Fetch all emails
+- [X] Table view
+- [X] Sort & Filter
+- [ ] Only use pure emails for To/From
 - [ ] Visuzalize as treemap and possible sunburst chart
-- [ ] ability to bulk delete emails
+- [ ] Ability to bulk delete emails
 
 
