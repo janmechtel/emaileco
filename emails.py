@@ -106,7 +106,7 @@ def __(messages, pd):
 
 @app.cell
 def __(df, mo):
-    mo.ui.dataframe(df, page_size=100)
+    mo.ui.dataframe(df, page_size=400)
     return
 
 
